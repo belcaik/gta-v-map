@@ -2,7 +2,7 @@
 Fecha: 2026-09-21. Rama `feature/gta-v-local-p0`.
 Original base: `321ce242975f09a8bf0100669270faf94651bbb1` (empty initial commit).
 Publication authorized by the user: public `belcaik/gta-v-map`, feature PR into `main`.
-Implementation is being recorded as focused Conventional Commits, without co-author trailers.
+Implementation is recorded as focused Conventional Commits, without co-author trailers.
 Use `git log --oneline main..HEAD` to inspect the implementation commits.
 Base inspeccionada: `belcaik/rdr2-map@a6f8e47046c3bba11b0492c5858f4e50f915a33b`.
 El checkout vecino RDR2 mantiene exactamente sus cambios ajenos; no tocarlo.
@@ -78,8 +78,17 @@ CI is configured; the original implementation stage verified its commands locall
   coverage limitations and Conventional Commits without attribution trailers.
 - Publication excludes local databases, extracted assets, reports, captures and secrets.
   Existing personal progress remains local and is not reset by these checks.
-- Remote CI results and the PR link will be recorded after publishing. No merge or
-  public website deployment is authorized by this publication request.
+- `npm run generate --prefix backend` produced no type drift. Both npm audits
+  reported zero vulnerabilities. The staged diff passed whitespace and excluded-file checks.
+- Public repository: https://github.com/belcaik/gta-v-map
+- Open PR: https://github.com/belcaik/gta-v-map/pull/1
+  (`feature/gta-v-local-p0` into `main`). Main retains the original empty baseline;
+  the complete application remains on the feature branch until review and merge.
+- GitHub Actions runs the checks on push and PR. For current remote results, run
+  `gh pr checks 1 --repo belcaik/gta-v-map` or inspect the PR Checks tab.
+  Remote checks were still running when this publication record was written.
+- No merge or public website deployment was performed. Next action: review PR #1,
+  inspect its final CI results and explicitly authorize a merge if desired.
 
 ## Fallos encontrados y resueltos
 

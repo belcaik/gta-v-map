@@ -19,9 +19,13 @@ Priority: delivery. Depends on T08. Owner: Codex.
 Acceptance: focused Conventional Commits without co-author trailers, English README
 and PR text, public `belcaik/gta-v-map`, an open feature PR against `main`, verified
 checks and no downloaded assets or personal progress in Git.
-Status: in progress. Local lint, types, build, one backend integration test, six Python
-tests and four E2E scenarios passed again on 2026-09-21. Publication is user-authorized;
-merging and public application deployment are not part of this task.
+Status: published. [Public repository](https://github.com/belcaik/gta-v-map) and
+[open PR #1](https://github.com/belcaik/gta-v-map/pull/1). Local lint, types, build,
+one backend integration test, six Python tests and four E2E scenarios passed again
+on 2026-09-21; generated types match and both npm audits report zero vulnerabilities.
+Remote CI was running when this record was written; current results are on the PR.
+Publication is user-authorized; merging and public application deployment are not
+part of this task. Personal progress and third-party assets remain local.
 
 ## Límites que no se ocultan
 - Símbolos ausentes en la fuente: fallback explícito; ampliar solo con un recurso visual comprobado.
