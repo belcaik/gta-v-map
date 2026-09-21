@@ -30,5 +30,8 @@ Activa .venv antes de comandos Python. Pruebas sin red externa.
 - No push, merge ni publicación sin autorización. La memoria externa es opcional.
 
 ## Referencias
+Despliegue: antes de cambiar parámetros, Docker, Actions o el script SSH, lee
+[homeserver](docs/deployment.md). Para portar el despliegue a RDR2, sigue su sección de réplica.
+
 [Especificación](docs/spec.md), [arquitectura](docs/architecture.md),
 [decisiones](docs/decisions.md), [avisos](THIRD_PARTY_NOTICES.md).

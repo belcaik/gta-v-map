@@ -65,7 +65,9 @@ The API listens on **127.0.0.1:3002**. Vite proxies relative API and media reque
 These ports are separate from the original RDR2 app.
 
 `npm run build` builds both components. `npm start --prefix backend` starts the
-compiled API. The UI uses Vite during local development; public deployment is not configured.
+compiled API. For Docker images, free GitHub Actions publishing and LAN deployment
+through the `baphomet` SSH alias, follow the [homeserver guide](docs/deployment.md)
+(Spanish, including parameters, backups, rollback and replication in RDR2).
 
 ### Offline synthetic demo
 
@@ -137,7 +139,9 @@ root `.env`; Vite reads `API_TARGET`. Existing environment variables take preced
 | --- | --- |
 | `DATA_ROOT` | data, relative to the project root; imported asset storage |
 | `DB_PATH` | DATA_ROOT/gta-v.db; optional independent database path |
-| `PORT` | 3002; API binds to loopback |
+| `HOST` / `PORT` | 127.0.0.1 / 3002; API bind address and port |
+| `WEB_HOST` / `WEB_PORT` | 127.0.0.1 / 5175; Vite development bind address and port |
+| `STATIC_ROOT` | Optional compiled frontend directory; set by the Docker image |
 | `API_TARGET` | http://127.0.0.1:3002; Vite proxy target |
 | `PYTHON` | Python executable for Node tests; default .venv/bin/python |
 | `CHROME_PATH` | Alternative Chrome executable for Playwright, not the scraper |

@@ -27,7 +27,21 @@ Remote CI was running when this record was written; current results are on the P
 Publication is user-authorized; merging and public application deployment are not
 part of this task. Personal progress and third-party assets remain local.
 
-## Límites que no se ocultan
+## T10 Docker y homeserver
+
+Propietario: Codex; rama `feat/docker-homeserver`, base `origin/main` (`c1a1768`).
+Plan: (1) imagen única con frontend/API y SQLite persistente; (2) publicación GHCR
+con runners estándar y repositorio público; (3) despliegue SSH parametrizado;
+(4) pruebas de contenedor/importación/recreación y guía de réplica RDR2.
+Subagentes GPT-5.6 Luna en worktrees separados: runtime (Docker y aplicación),
+deploy (script SSH), CI (workflows). Integración y documentación: agente principal.
+Criterio de cierre: checks de aplicación pasan, imagen sirve UI/API/medios,
+progreso sobrevive recreación y reimportación, script detecta errores y documenta
+parámetros, publicación, datos, respaldo, rollback y réplica. La ejecución remota
+se acredita por separado; requiere conexión SSH verificada e imagen publicada.
+Estado: en implementación.
+
+## Límites de cobertura
 - Símbolos ausentes en la fuente: fallback explícito; ampliar solo con un recurso visual comprobado.
 - Imagen HTTP i.imgur.com del punto 14019: no descargada. Requiere inspeccionar y autorizar
   técnicamente ese destino HTTPS o una exportación legítima; no sustituir URL por intuición.
