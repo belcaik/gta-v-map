@@ -1,0 +1,108 @@
+{
+  "sourceUrl": "https://gta-5-map.com/",
+  "window": {
+    "tilesCdnUrl": "https://tiles.mapgenie.io/games/",
+    "mapData": {
+      "map": {
+        "id": 27,
+        "title": "Los Santos"
+      },
+      "groups": [
+        {
+          "id": 1,
+          "title": "Synthetic"
+        }
+      ],
+      "categories": {
+        "10": {
+          "id": 10,
+          "title": "Synthetic category",
+          "icon": "test",
+          "group_id": 1
+        }
+      },
+      "mapConfig": {
+        "tile_sets": [
+          {
+            "name": "Atlas",
+            "min_zoom": 3,
+            "max_zoom": 3,
+            "bounds": {
+              "3": {
+                "x": {
+                  "min": 0,
+                  "max": 2
+                },
+                "y": {
+                  "min": 0,
+                  "max": 2
+                }
+              }
+            },
+            "pattern": "gta5/los-santos/atlas/{z}/{x}/{y}.png"
+          }
+        ]
+      }
+    }
+  },
+  "sprite": {
+    "test": {
+      "x": 0,
+      "y": 0,
+      "width": 32,
+      "height": 37
+    }
+  },
+  "responses": [
+    {
+      "url": "https://cdn.mapgenie.io/images/games/gta5/markers.png",
+      "status": 200
+    }
+  ],
+  "locations": {
+    "locations": [
+      {
+        "id": 100,
+        "map_id": 27,
+        "category_id": 10,
+        "title": "Synthetic 100",
+        "latitude": "70",
+        "longitude": "-130",
+        "description": "**Synthetic content**",
+        "media": []
+      },
+      {
+        "id": 101,
+        "map_id": 27,
+        "category_id": 10,
+        "title": "Synthetic 101",
+        "latitude": "70",
+        "longitude": "-130",
+        "description": "**Synthetic content**",
+        "media": [
+          {
+            "id": 1,
+            "type": "image",
+            "url": "/fixture/photo.png",
+            "order": 10
+          },
+          {
+            "id": 2,
+            "type": "image",
+            "url": "https://media.mapgenie.io/fixture/photo2.png",
+            "order": 10
+          }
+        ]
+      },
+      {
+        "id": 102,
+        "map_id": 27,
+        "category_id": 10,
+        "title": "Synthetic 102",
+        "latitude": "70",
+        "longitude": "-130",
+        "description": "**Synthetic content**"
+      }
+    ]
+  }
+}

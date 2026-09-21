@@ -1,0 +1,102 @@
+[
+  {
+    "name": "unsupported version",
+    "path": [
+      "schemaVersion"
+    ],
+    "value": 9,
+    "valid": false
+  },
+  {
+    "name": "orphan category",
+    "path": [
+      "waypoints",
+      0,
+      "categoryId"
+    ],
+    "value": "unknown",
+    "valid": false
+  },
+  {
+    "name": "wrong-kind photo",
+    "path": [
+      "waypoints",
+      1,
+      "images",
+      0,
+      "assetId"
+    ],
+    "value": "demo-icon-0",
+    "valid": false
+  },
+  {
+    "name": "false absence",
+    "path": [
+      "waypoints",
+      1,
+      "imageDiscovery"
+    ],
+    "value": "none",
+    "valid": false
+  },
+  {
+    "name": "path traversal",
+    "path": [
+      "assets",
+      0,
+      "path"
+    ],
+    "value": "../../secret.png",
+    "valid": false
+  },
+  {
+    "name": "no failure reason",
+    "path": [
+      "waypoints",
+      3,
+      "discoveryError"
+    ],
+    "value": null,
+    "valid": false
+  },
+  {
+    "name": "outside bounds",
+    "path": [
+      "waypoints",
+      0,
+      "coordinates",
+      "x"
+    ],
+    "value": 500,
+    "valid": false
+  },
+  {
+    "name": "complete with omissions",
+    "path": [
+      "coverage",
+      "complete"
+    ],
+    "value": true,
+    "valid": false
+  },
+  {
+    "name": "valid title change",
+    "path": [
+      "waypoints",
+      0,
+      "title"
+    ],
+    "value": "Changed title",
+    "valid": true
+  },
+  {
+    "name": "HTTP provenance retained",
+    "path": [
+      "assets",
+      0,
+      "sourceUrl"
+    ],
+    "value": "http://example.com/photo.png",
+    "valid": true
+  }
+]
