@@ -1,5 +1,40 @@
 # Handoff
 
+## Podman en baphomet — 2026-09-21
+
+Despliegue real operativo en `baphomet`, puerto HTTP 8080; ubicación
+`~/apps/gta-v-map`. Las direcciones LAN permanecen fuera de Git.
+El usuario desbloqueó el disco tras el corte eléctrico y autorizó usar Podman.
+Servidor: Ubuntu 24.04, Podman 4.9.3 rootless, podman-compose 1.0.6, `Linger=yes`.
+No se instaló Docker ni se modificaron los servicios existentes.
+
+- `CONTAINER_ENGINE=podman` selecciona el override `compose.podman.yaml` con
+  `keep-id:uid=1000,gid=1000`; SQLite/medios pertenecen al usuario SSH en el host.
+- Primera imagen: `localhost/gta-v-map:030b6c5`, transferida mediante `docker save`
+  y `--image-archive`; no hubo push ni publicación en GHCR. `.env.docker` local y
+  remoto apuntan a esa etiqueta. Para actualizar, proporcionar de nuevo el archivo
+  o cambiar a una etiqueta GHCR publicada, como explica [despliegue](deployment.md).
+- Dataset `data/full` importado: 2293 puntos. El progreso es el del servidor;
+  no se copió la DB del PC. Las marcas usadas para validación se restauraron.
+- Servicio `map-apps-gta-v-map.service` de systemd de usuario habilitado/activo.
+  Arranque automático configurado tras desbloquear el disco; no se reinició el host.
+- Healthcheck real de Podman saludable. Se corrigió el formato de Compose a cadena
+  shell porque podman-compose 1.0.6 construye incorrectamente las comillas de `CMD`.
+  Docker Compose también pasó `up --wait` con ese formato, en almacenamiento aislado.
+- `frontend/tests/real-check.mjs` contra la URL LAN: escritorio/móvil, tres controles
+  geográficos, fotos/galería, progreso y recarga pasan; cero solicitudes externas
+  y cero errores JS. Reporte y capturas en `reports/` ignorado por Git.
+- Despliegue repetido con el script, recreación del contenedor y reinicio de la unidad
+  systemd: siguen los 2293 puntos y la marca de control; valor inicial restaurado.
+- Cinco tests del script (`python3 -m unittest discover -s scripts/tests`),
+  shellcheck, bash -n, actionlint y diff --check pasan. Tests añadidos al workflow CI.
+- Faltaba rsync en el cliente: para esta ejecución se usó una copia temporal del
+  binario del servidor bajo `/tmp/gta-deploy-bin`. Instalar rsync localmente antes de
+  futuras transferencias `--dataset`; el script detecta su ausencia antes de modificar el host.
+
+Pendiente opcional: publicar la rama/workflow y paquete GHCR para actualizaciones
+sin archivo local; comprobación desde dispositivos físicos adicionales de la LAN.
+
 ## Docker y homeserver — 2026-09-21
 
 Rama actual: `feat/docker-homeserver`, creada desde `origin/main` (`c1a1768`, PR #1
@@ -33,10 +68,8 @@ Validación local de la rama integrada:
 - Ejecución del script contra `baphomet`: falla en preflight con
   `Host key verification failed`, antes de copiar archivos o alterar el servidor.
 
-Pendiente externo: verificar la huella SSH del homeserver y registrar la clave;
-publicar los commits/workflow, comprobar Actions y hacer público el paquete GHCR;
-desplegar y comprobar desde dispositivos físicos de la LAN. No se hizo push,
-publicación de imagen ni despliegue real. La guía contiene los pasos exactos.
+En esta etapa inicial no hubo publicación ni despliegue real. El bloqueo SSH se
+resolvió y la ejecución remota está acreditada en el seguimiento Podman de arriba.
 
 ## Etapa anterior: implementación y publicación P0
 

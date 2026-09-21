@@ -39,10 +39,12 @@ Criterio de cierre: checks de aplicación pasan, imagen sirve UI/API/medios,
 progreso sobrevive recreación y reimportación, script detecta errores y documenta
 parámetros, publicación, datos, respaldo, rollback y réplica. La ejecución remota
 se acredita por separado; requiere conexión SSH verificada e imagen publicada.
-Estado: implementación y validación local completas. Lint/tipos/build, dos tests Node,
-seis Python, cuatro E2E, Docker AMD64 con UI/API/medios/progreso durable, Compose
-parametrizado, actionlint y shellcheck pasan. Publicación/ejecución remota pendientes:
-preflight de `baphomet` rechazó la clave SSH no registrada; no hubo cambios remotos.
+Estado: implementado y desplegado en baphomet con Podman rootless, por elección del
+usuario. 2293 puntos, medios locales, healthcheck sano y servicio de usuario habilitado.
+Lint/tipos/build, dos tests Node, seis Python, cuatro E2E, cinco tests de despliegue,
+Docker/Compose y checks estáticos pasan. Verificación real LAN con escritorio/móvil,
+recreación del contenedor y reinicio systemd conserva progreso. La imagen se cargó
+por SSH; publicar el workflow y GHCR sigue pendiente. No se reinició el homeserver.
 Guía: [despliegue](deployment.md). Evidencia: [handoff](context-handoff.md).
 
 ## Límites de cobertura

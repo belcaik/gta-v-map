@@ -168,6 +168,8 @@ podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml log
 
 Podman no ofrece `up --wait`; el script espera de forma explícita y acotada el
 healthcheck de `/api/health` antes de considerar correcto el despliegue.
+El healthcheck de Compose usa una cadena shell: `podman-compose` 1.0.6 altera las
+comillas de la forma `CMD` con argumentos JavaScript. Mantén esta forma al portarlo.
 
 Cuando el servidor no puede extraer `MAP_IMAGE` del registro, `--image-archive`
 carga por SSH un archivo creado con `docker save`. `MAP_IMAGE` debe coincidir con
@@ -184,6 +186,9 @@ CONTAINER_ENGINE=podman ./scripts/deploy.sh \
 La carga usa el motor seleccionado en el servidor; el formato producido por
 `docker save` también lo acepta Podman. El archivo es solo una entrada de
 transferencia y no sustituye el valor de `MAP_IMAGE`.
+Mientras uses una etiqueta local, conserva `--image-archive` en las siguientes
+ejecuciones; omitirlo intenta descargar del registro. Cuando publiques en GHCR,
+cambia `MAP_IMAGE` a esa etiqueta y podrás omitir el archivo.
 
 El script usa `baphomet` por defecto, copia Compose y su configuración local,
 descarga la imagen, prepara permisos e importa los datos antes de levantar el
@@ -192,6 +197,8 @@ actualizaciones siguientes solo necesitan:
 
 ```bash
 ./scripts/deploy.sh
+# Con Podman y una imagen ya publicada en GHCR:
+CONTAINER_ENGINE=podman ./scripts/deploy.sh
 ```
 
 Para otra instalación, cambia los parámetros de conexión:
@@ -212,6 +219,11 @@ en el otro dispositivo y comprueba que conserva la marca. Un healthcheck correct
 solo acredita proceso/DB: verifica también `/api/dataset` y medios tras la importación.
 
 ## 5. Operación, respaldo y rollback
+
+En `baphomet` también puedes reiniciar el servicio con
+`systemctl --user restart map-apps-gta-v-map.service`. Queda habilitado para arrancar
+con la sesión de usuario persistente (`Linger=yes`). Si el disco del homeserver está
+cifrado, primero debe desbloquearse: el servicio no automatiza ese paso.
 
 En el servidor, desde el directorio de despliegue:
 
