@@ -40,7 +40,9 @@ Para desarrollo sin Docker, consulta `.env.example`: `HOST`/`PORT` controlan la 
 peticiones relativas eliminan la necesidad de un host de API en el frontend.
 
 **Comprobación:** `docker compose --env-file .env.docker config` debe mostrar el
-puerto, imagen y montaje elegidos. Mantén direcciones privadas solo en archivos locales.
+puerto, imagen y montaje elegidos. Con Podman, incluye el override:
+`podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml config`.
+Mantén direcciones privadas solo en archivos locales.
 
 ## 2. Construir y publicar en GitHub
 
@@ -97,13 +99,33 @@ o el tipo de runner. No es una garantía de precios futuros.
 
 ## 3. Preparar SSH y el servidor
 
-El cliente necesita Bash, OpenSSH y rsync. El servidor necesita Docker Engine,
-Docker Compose v2 con `up --wait`, rsync y acceso saliente a GHCR. El usuario SSH
-debe poder ejecutar Docker sin un prompt interactivo de sudo.
+El cliente necesita Bash, OpenSSH y rsync. El servidor puede usar Docker Engine y
+Compose v2, o el Podman rootless ya instalado en `baphomet` (Podman 4.9.3 y
+`podman-compose` 1.0.6). En ambos casos necesita rsync y acceso saliente a GHCR.
+El usuario SSH debe poder ejecutar el motor sin un prompt interactivo de sudo.
+
+Docker sigue siendo la opción predeterminada:
 
 ```bash
 ssh baphomet 'docker version && docker compose version && command -v rsync'
 ```
+
+Para la instalación rootless de Podman:
+
+```bash
+ssh baphomet 'podman --version && podman-compose --version && command -v rsync'
+ssh baphomet 'loginctl show-user "$USER" -p Linger'
+```
+
+La salida `Linger=yes` permite que el servicio de usuario arranque después de un
+reinicio aunque todavía no haya una sesión abierta. Si muestra `Linger=no`, un
+administrador debe ejecutar `loginctl enable-linger USUARIO_SSH` una vez.
+El script instala y habilita automáticamente un servicio systemd de usuario para
+Podman. Su unidad se llama `map-DEPLOY_DIR-con-barras-reemplazadas-por-guiones.service`;
+con el valor predeterminado de `DEPLOY_DIR`, es
+`map-apps-gta-v-map.service`.
+El mapeo `keep-id` sigue la documentación oficial de
+[Podman 4.9.3](https://docs.podman.io/en/v4.9.3/markdown/podman-run.1.html).
 
 El alias `baphomet` se resuelve en `~/.ssh/config` del cliente; no tiene por qué
 resolverse en tu teléfono. Si aparece `Host key verification failed`, compara la
@@ -126,6 +148,42 @@ aislado con `.venv/bin/python -m scraper.demo --output /tmp/gta-deploy-demo`.
 ./scripts/deploy.sh --dry-run --dataset data/full
 ./scripts/deploy.sh --dataset data/full
 ```
+
+El valor predeterminado es `CONTAINER_ENGINE=docker`. Para el Podman rootless de
+`baphomet`, conserva el mismo `.env.docker` y usa los dos archivos Compose, incluido
+el override `compose.podman.yaml`, que aplica `userns_mode: keep-id:uid=1000,gid=1000`
+y `user: 1000:1000` para conservar la propiedad del usuario anfitrión:
+
+```bash
+CONTAINER_ENGINE=podman ./scripts/deploy.sh --dataset data/full
+```
+
+El override también se puede operar manualmente con `podman-compose`:
+
+```bash
+podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml up -d
+podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml ps
+podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml logs --tail=100 map
+```
+
+Podman no ofrece `up --wait`; el script espera de forma explícita y acotada el
+healthcheck de `/api/health` antes de considerar correcto el despliegue.
+
+Cuando el servidor no puede extraer `MAP_IMAGE` del registro, `--image-archive`
+carga por SSH un archivo creado con `docker save`. `MAP_IMAGE` debe coincidir con
+la etiqueta guardada:
+
+```bash
+docker build -t localhost/gta-v-map:local .
+docker save -o /tmp/gta-v-map.tar localhost/gta-v-map:local
+# En .env.docker: MAP_IMAGE=localhost/gta-v-map:local
+CONTAINER_ENGINE=podman ./scripts/deploy.sh \
+  --image-archive /tmp/gta-v-map.tar --dataset data/full
+```
+
+La carga usa el motor seleccionado en el servidor; el formato producido por
+`docker save` también lo acepta Podman. El archivo es solo una entrada de
+transferencia y no sustituye el valor de `MAP_IMAGE`.
 
 El script usa `baphomet` por defecto, copia Compose y su configuración local,
 descarga la imagen, prepara permisos e importa los datos antes de levantar el
@@ -157,17 +215,30 @@ solo acredita proceso/DB: verifica también `/api/dataset` y medios tras la impo
 
 En el servidor, desde el directorio de despliegue:
 
+Docker:
+
 ```bash
 docker compose --env-file .env.docker ps
 docker compose --env-file .env.docker logs --tail=100 map
 docker compose --env-file .env.docker stop map
 ```
 
+Podman:
+
+```bash
+podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml ps
+podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml logs --tail=100 map
+podman-compose --env-file .env.docker -f compose.yaml -f compose.podman.yaml stop map
+```
+
 Con el servicio detenido, respalda **todo** `SERVER_DATA_DIR`, incluidos SQLite,
 WAL/SHM si existen, imágenes, iconos y tiles. Guarda además `.env.docker` para saber
 qué versión y rutas usabas. Usa `tar` o tu sistema de respaldos habitual sobre la
 ruta efectiva que muestra `docker compose --env-file .env.docker config`.
-Después reinicia con `docker compose --env-file .env.docker up -d --wait`.
+Después reinicia con Docker usando `docker compose --env-file .env.docker up -d --wait`,
+o con Podman usando `podman-compose --env-file .env.docker -f compose.yaml -f
+compose.podman.yaml up -d`; el script aplica la espera acotada del healthcheck de
+Podman.
 
 Para trasladar el progreso local, detén primero la API local; copia su `DATA_ROOT`
 completo y su DB a un directorio nuevo en el servidor. Si `DB_PATH` local estaba

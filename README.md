@@ -49,7 +49,10 @@ python -m pip install -r scraper/requirements.lock
 
 If a global libvips installation conflicts with Sharp, use
 `SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm run install:all`.
-No global packages, hooks, MCPs or Docker are required.
+No global packages, hooks, MCPs or container engine are required for local
+development. Docker Engine with Compose v2 is the default production path; the
+homeserver guide also supports the existing rootless Podman 4.9.3 installation
+with `podman-compose` 1.0.6.
 
 ## Extract, import and run
 
@@ -67,7 +70,10 @@ These ports are separate from the original RDR2 app.
 `npm run build` builds both components. `npm start --prefix backend` starts the
 compiled API. For Docker images, free GitHub Actions publishing and LAN deployment
 through the `baphomet` SSH alias, follow the [homeserver guide](docs/deployment.md)
-(Spanish, including parameters, backups, rollback and replication in RDR2).
+(Spanish, including parameters, backups, rollback and replication in RDR2). Set
+`CONTAINER_ENGINE=podman` when deploying to the rootless Podman installation;
+the guide covers its Compose override, bounded healthcheck wait, reboot service
+and optional `--image-archive` transfer for images that are not in a registry.
 
 ### Offline synthetic demo
 
