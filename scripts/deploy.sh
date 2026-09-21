@@ -204,4 +204,8 @@ fi
 log 'starting the map service'
 remote_command "$REMOTE_CD && $REMOTE_COMPOSE up -d --wait --wait-timeout 120 map" || die 'service start failed'
 
-log "deployment complete: $SSH_HOST:~/$DEPLOY_DIR"
+if ((DRY_RUN)); then
+  log 'dry-run complete; no files or services changed'
+else
+  log "deployment complete: $SSH_HOST:~/$DEPLOY_DIR"
+fi

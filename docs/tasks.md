@@ -39,7 +39,11 @@ Criterio de cierre: checks de aplicación pasan, imagen sirve UI/API/medios,
 progreso sobrevive recreación y reimportación, script detecta errores y documenta
 parámetros, publicación, datos, respaldo, rollback y réplica. La ejecución remota
 se acredita por separado; requiere conexión SSH verificada e imagen publicada.
-Estado: en implementación.
+Estado: implementación y validación local completas. Lint/tipos/build, dos tests Node,
+seis Python, cuatro E2E, Docker AMD64 con UI/API/medios/progreso durable, Compose
+parametrizado, actionlint y shellcheck pasan. Publicación/ejecución remota pendientes:
+preflight de `baphomet` rechazó la clave SSH no registrada; no hubo cambios remotos.
+Guía: [despliegue](deployment.md). Evidencia: [handoff](context-handoff.md).
 
 ## Límites de cobertura
 - Símbolos ausentes en la fuente: fallback explícito; ampliar solo con un recurso visual comprobado.

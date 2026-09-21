@@ -1,4 +1,45 @@
 # Handoff
+
+## Docker y homeserver — 2026-09-21
+
+Rama actual: `feat/docker-homeserver`, creada desde `origin/main` (`c1a1768`, PR #1
+ya integrado). La rama local main seguía en el commit inicial; se conservaron los
+datos y archivos ignorados al abrir esta rama. El registro anterior queda debajo
+como evidencia histórica, no como estado actual de main.
+
+T10 implementado con tres subagentes GPT-5.6 Luna en worktrees separados: runtime,
+script y CI; integración/documentación por el agente principal. Entrada operativa:
+[despliegue](deployment.md), incluyendo réplica en RDR2. Una imagen sirve UI/API;
+Compose publica un puerto LAN configurable y conserva SQLite/medios en bind mount.
+El script usa SSH verificado, importa datasets explícitos y conserva progreso.
+Workflows públicos con runners estándar, sin artifacts/cachés; GHCR publica desde
+main. La opción manual multi-arquitectura está implementada pero no probada en ARM64.
+
+Validación local de la rama integrada:
+
+- `npm run lint`, `npm run types`, `npm run build`: OK.
+- `PATH="$PWD/.venv/bin:$PATH" npm test`: dos tests Node y seis Python pasan.
+- `CHROME_PATH=/usr/bin/google-chrome-stable npm run test:e2e`: cuatro escenarios pasan.
+- `docker build -t gta-v-map:smoke .`: construcción AMD64 limpia con lockfiles; imagen
+  final como usuario node, sin compiladores ni dependencias de desarrollo.
+- Smoke con dataset sintético, volumen aislado y puerto temporal: UI, API, icono,
+  tile y 404 correctos; marcar, recrear contenedor y reimportar conserva progreso.
+  Playwright contra la imagen: escritorio y móvil cargan bundles, seis marcadores,
+  tiles y progreso compartido sin errores JS.
+- Compose real con puerto/directorio/proyecto temporales: `up --wait` saludable y
+  `/api/health` accesible en el puerto elegido. Contenedores/volúmenes de prueba retirados.
+- `actionlint` 1.7.12, `shellcheck`, `bash -n scripts/deploy.sh`, dry-run con dataset
+  y `git diff --check`: OK.
+- Ejecución del script contra `baphomet`: falla en preflight con
+  `Host key verification failed`, antes de copiar archivos o alterar el servidor.
+
+Pendiente externo: verificar la huella SSH del homeserver y registrar la clave;
+publicar los commits/workflow, comprobar Actions y hacer público el paquete GHCR;
+desplegar y comprobar desde dispositivos físicos de la LAN. No se hizo push,
+publicación de imagen ni despliegue real. La guía contiene los pasos exactos.
+
+## Etapa anterior: implementación y publicación P0
+
 Fecha: 2026-09-21. Rama `feature/gta-v-local-p0`.
 Original base: `321ce242975f09a8bf0100669270faf94651bbb1` (empty initial commit).
 Publication authorized by the user: public `belcaik/gta-v-map`, feature PR into `main`.
