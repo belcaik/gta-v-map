@@ -1,10 +1,17 @@
 import express from 'express'
 import type Database from 'better-sqlite3'
+import { join } from 'node:path'
 import { safeFile } from './media/files'
 import type { Asset, Category, Tile, Waypoint } from '../../schemas/dataset'
 import { apiResponse, dataset } from './contract'
 
-export function createApp(db: Database.Database, root: string) {
+const reservedPrefixes = ['/api', '/assets', '/tiles']
+
+function isReservedPath(path: string) {
+  return reservedPrefixes.some(prefix => path === prefix || path.startsWith(prefix + '/'))
+}
+
+export function createApp(db: Database.Database, root: string, staticRoot?: string) {
   const app = express()
   app.disable('x-powered-by')
   app.use(express.json({ limit: '8kb' }))
@@ -15,6 +22,15 @@ export function createApp(db: Database.Database, root: string) {
   })
   const payloads = <Value>(query: string): Value[] =>
     (db.prepare(query).all() as { payload: string }[]).map(row => JSON.parse(row.payload))
+  app.get('/api/health', (_request, response) => {
+    try {
+      const result = db.prepare('SELECT 1 AS ready').get() as { ready: number }
+      if (result.ready !== 1) throw new Error('database is not ready')
+      response.json({ status: 'ok', database: 'ready' })
+    } catch {
+      response.status(503).json({ status: 'error', database: 'unavailable' })
+    }
+  })
   app.get('/api/categories', (_request, response) => {
     const assets = new Map(payloads<Asset>('SELECT payload FROM assets').map(asset => [asset.id, asset]))
     const selection = db.prepare("SELECT value FROM metadata WHERE key='activeMaps'").get() as { value: string } | undefined
@@ -72,6 +88,7 @@ export function createApp(db: Database.Database, root: string) {
     point.images.sort((left, right) => left.order - right.order)
     response.json(point)
   })
+  if (staticRoot) app.use('/assets', express.static(join(staticRoot, 'assets')))
   const send = async (item: Asset | Tile | undefined, response: express.Response) => {
     if (!item || item.status !== 'downloaded' || !item.path) { response.status(404).json({ error: 'Local image unavailable' }); return }
     try {
@@ -89,6 +106,13 @@ export function createApp(db: Database.Database, root: string) {
     const row = db.prepare('SELECT payload FROM tiles WHERE map_id=? AND z=? AND x=? AND y=?').get(mapId, z, x, y) as { payload: string } | undefined
     void send(row ? JSON.parse(row.payload) : undefined, response)
   })
+  if (staticRoot) {
+    app.use(express.static(staticRoot))
+    app.get('*', (request, response, next) => {
+      if (isReservedPath(request.path)) { next(); return }
+      response.sendFile(join(staticRoot, 'index.html'), error => { if (error) next(error) })
+    })
+  }
   app.use((_request, response) => { response.status(404).json({ error: 'Not found' }) })
   app.use((error: Error, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
     console.error(error.message)

@@ -4,6 +4,9 @@ dist/
 __pycache__/
 *.pyc
 .env
+.env.docker
+.env.docker.*
+!.env.docker.example
 data/
 reports/
 test-results/

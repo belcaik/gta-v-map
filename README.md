@@ -49,7 +49,10 @@ python -m pip install -r scraper/requirements.lock
 
 If a global libvips installation conflicts with Sharp, use
 `SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm run install:all`.
-No global packages, hooks, MCPs or Docker are required.
+No global packages, hooks, MCPs or container engine are required for local
+development. Docker Engine with Compose v2 is the default production path; the
+homeserver guide also supports the existing rootless Podman 4.9.3 installation
+with `podman-compose` 1.0.6.
 
 ## Extract, import and run
 
@@ -65,7 +68,12 @@ The API listens on **127.0.0.1:3002**. Vite proxies relative API and media reque
 These ports are separate from the original RDR2 app.
 
 `npm run build` builds both components. `npm start --prefix backend` starts the
-compiled API. The UI uses Vite during local development; public deployment is not configured.
+compiled API. For Docker images, free GitHub Actions publishing and LAN deployment
+through the `baphomet` SSH alias, follow the [homeserver guide](docs/deployment.md)
+(Spanish, including parameters, backups, rollback and replication in RDR2). Set
+`CONTAINER_ENGINE=podman` when deploying to the rootless Podman installation;
+the guide covers its Compose override, bounded healthcheck wait, reboot service
+and optional `--image-archive` transfer for images that are not in a registry.
 
 ### Offline synthetic demo
 
@@ -137,7 +145,9 @@ root `.env`; Vite reads `API_TARGET`. Existing environment variables take preced
 | --- | --- |
 | `DATA_ROOT` | data, relative to the project root; imported asset storage |
 | `DB_PATH` | DATA_ROOT/gta-v.db; optional independent database path |
-| `PORT` | 3002; API binds to loopback |
+| `HOST` / `PORT` | 127.0.0.1 / 3002; API bind address and port |
+| `WEB_HOST` / `WEB_PORT` | 127.0.0.1 / 5175; Vite development bind address and port |
+| `STATIC_ROOT` | Optional compiled frontend directory; set by the Docker image |
 | `API_TARGET` | http://127.0.0.1:3002; Vite proxy target |
 | `PYTHON` | Python executable for Node tests; default .venv/bin/python |
 | `CHROME_PATH` | Alternative Chrome executable for Playwright, not the scraper |

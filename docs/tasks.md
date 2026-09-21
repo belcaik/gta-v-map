@@ -27,7 +27,35 @@ Remote CI was running when this record was written; current results are on the P
 Publication is user-authorized; merging and public application deployment are not
 part of this task. Personal progress and third-party assets remain local.
 
-## Límites que no se ocultan
+## T10 Docker y homeserver
+
+Propietario: Codex; rama `feat/docker-homeserver`, base `origin/main` (`c1a1768`).
+Plan: (1) imagen única con frontend/API y SQLite persistente; (2) publicación GHCR
+con runners estándar y repositorio público; (3) despliegue SSH parametrizado;
+(4) pruebas de contenedor/importación/recreación y guía de réplica RDR2.
+Subagentes GPT-5.6 Luna en worktrees separados: runtime (Docker y aplicación),
+deploy (script SSH), CI (workflows). Integración y documentación: agente principal.
+Criterio de cierre: checks de aplicación pasan, imagen sirve UI/API/medios,
+progreso sobrevive recreación y reimportación, script detecta errores y documenta
+parámetros, publicación, datos, respaldo, rollback y réplica. La ejecución remota
+se acredita por separado; requiere conexión SSH verificada e imagen publicada.
+Estado: implementado y desplegado en baphomet con Podman rootless, por elección del
+usuario. 2293 puntos, medios locales, healthcheck sano y servicio de usuario habilitado.
+Lint/tipos/build, dos tests Node, seis Python, cuatro E2E, cinco tests de despliegue,
+Docker/Compose y checks estáticos pasan. Verificación real LAN con escritorio/móvil,
+recreación del contenedor y reinicio systemd conserva progreso. La imagen se cargó
+por SSH; publicar el workflow y GHCR sigue pendiente. No se reinició el homeserver.
+Guía: [despliegue](deployment.md). Evidencia: [handoff](context-handoff.md).
+
+## T11 Prompt de réplica para RDR2
+
+Estado: entregado en [prompt](prompts/rdr2-homeserver.prompt.md). Incluye arquitectura,
+parámetros, workflows, script SSH, compatibilidad Podman, problemas encontrados,
+systemd, despliegue por archivo/GHCR y criterios de verificación. Contrasta lo
+ejecutado con lo pendiente de publicación; documento revisado contra los archivos
+y evidencia de T10, sin direcciones LAN ni datos privados.
+
+## Límites de cobertura del mapa
 - Símbolos ausentes en la fuente: fallback explícito; ampliar solo con un recurso visual comprobado.
 - Imagen HTTP i.imgur.com del punto 14019: no descargada. Requiere inspeccionar y autorizar
   técnicamente ese destino HTTPS o una exportación legítima; no sustituir URL por intuición.

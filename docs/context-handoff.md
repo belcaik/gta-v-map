@@ -1,4 +1,81 @@
 # Handoff
+
+## Podman en baphomet — 2026-09-21
+
+Despliegue real operativo en `baphomet`, puerto HTTP 8080; ubicación
+`~/apps/gta-v-map`. Las direcciones LAN permanecen fuera de Git.
+El usuario desbloqueó el disco tras el corte eléctrico y autorizó usar Podman.
+Servidor: Ubuntu 24.04, Podman 4.9.3 rootless, podman-compose 1.0.6, `Linger=yes`.
+No se instaló Docker ni se modificaron los servicios existentes.
+
+- `CONTAINER_ENGINE=podman` selecciona el override `compose.podman.yaml` con
+  `keep-id:uid=1000,gid=1000`; SQLite/medios pertenecen al usuario SSH en el host.
+- Primera imagen: `localhost/gta-v-map:030b6c5`, transferida mediante `docker save`
+  y `--image-archive`; no hubo push ni publicación en GHCR. `.env.docker` local y
+  remoto apuntan a esa etiqueta. Para actualizar, proporcionar de nuevo el archivo
+  o cambiar a una etiqueta GHCR publicada, como explica [despliegue](deployment.md).
+- Dataset `data/full` importado: 2293 puntos. El progreso es el del servidor;
+  no se copió la DB del PC. Las marcas usadas para validación se restauraron.
+- Servicio `map-apps-gta-v-map.service` de systemd de usuario habilitado/activo.
+  Arranque automático configurado tras desbloquear el disco; no se reinició el host.
+- Healthcheck real de Podman saludable. Se corrigió el formato de Compose a cadena
+  shell porque podman-compose 1.0.6 construye incorrectamente las comillas de `CMD`.
+  Docker Compose también pasó `up --wait` con ese formato, en almacenamiento aislado.
+- `frontend/tests/real-check.mjs` contra la URL LAN: escritorio/móvil, tres controles
+  geográficos, fotos/galería, progreso y recarga pasan; cero solicitudes externas
+  y cero errores JS. Reporte y capturas en `reports/` ignorado por Git.
+- Despliegue repetido con el script, recreación del contenedor y reinicio de la unidad
+  systemd: siguen los 2293 puntos y la marca de control; valor inicial restaurado.
+- Cinco tests del script (`python3 -m unittest discover -s scripts/tests`),
+  shellcheck, bash -n, actionlint y diff --check pasan. Tests añadidos al workflow CI.
+- Faltaba rsync en el cliente: para esta ejecución se usó una copia temporal del
+  binario del servidor bajo `/tmp/gta-deploy-bin`. Instalar rsync localmente antes de
+  futuras transferencias `--dataset`; el script detecta su ausencia antes de modificar el host.
+
+Pendiente opcional: publicar la rama/workflow y paquete GHCR para actualizaciones
+sin archivo local; comprobación desde dispositivos físicos adicionales de la LAN.
+
+Transferencia a RDR2: [prompt autocontenido](prompts/rdr2-homeserver.prompt.md),
+con pasos, decisiones y criterios de cierre. Su creación no modificó RDR2 ni el servidor.
+
+## Docker y homeserver — 2026-09-21
+
+Rama actual: `feat/docker-homeserver`, creada desde `origin/main` (`c1a1768`, PR #1
+ya integrado). La rama local main seguía en el commit inicial; se conservaron los
+datos y archivos ignorados al abrir esta rama. El registro anterior queda debajo
+como evidencia histórica, no como estado actual de main.
+
+T10 implementado con tres subagentes GPT-5.6 Luna en worktrees separados: runtime,
+script y CI; integración/documentación por el agente principal. Entrada operativa:
+[despliegue](deployment.md), incluyendo réplica en RDR2. Una imagen sirve UI/API;
+Compose publica un puerto LAN configurable y conserva SQLite/medios en bind mount.
+El script usa SSH verificado, importa datasets explícitos y conserva progreso.
+Workflows públicos con runners estándar, sin artifacts/cachés; GHCR publica desde
+main. La opción manual multi-arquitectura está implementada pero no probada en ARM64.
+
+Validación local de la rama integrada:
+
+- `npm run lint`, `npm run types`, `npm run build`: OK.
+- `PATH="$PWD/.venv/bin:$PATH" npm test`: dos tests Node y seis Python pasan.
+- `CHROME_PATH=/usr/bin/google-chrome-stable npm run test:e2e`: cuatro escenarios pasan.
+- `docker build -t gta-v-map:smoke .`: construcción AMD64 limpia con lockfiles; imagen
+  final como usuario node, sin compiladores ni dependencias de desarrollo.
+- Smoke con dataset sintético, volumen aislado y puerto temporal: UI, API, icono,
+  tile y 404 correctos; marcar, recrear contenedor y reimportar conserva progreso.
+  Playwright contra la imagen: escritorio y móvil cargan bundles, seis marcadores,
+  tiles y progreso compartido sin errores JS.
+- Compose real con puerto/directorio/proyecto temporales: `up --wait` saludable y
+  `/api/health` accesible en el puerto elegido. Contenedores/volúmenes de prueba retirados.
+- `actionlint` 1.7.12, `shellcheck`, `bash -n scripts/deploy.sh`, dry-run con dataset
+  y `git diff --check`: OK.
+- Ejecución del script contra `baphomet`: falla en preflight con
+  `Host key verification failed`, antes de copiar archivos o alterar el servidor.
+
+En esta etapa inicial no hubo publicación ni despliegue real. El bloqueo SSH se
+resolvió y la ejecución remota está acreditada en el seguimiento Podman de arriba.
+
+## Etapa anterior: implementación y publicación P0
+
 Fecha: 2026-09-21. Rama `feature/gta-v-local-p0`.
 Original base: `321ce242975f09a8bf0100669270faf94651bbb1` (empty initial commit).
 Publication authorized by the user: public `belcaik/gta-v-map`, feature PR into `main`.
