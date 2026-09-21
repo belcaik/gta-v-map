@@ -1,0 +1,20 @@
+{
+  "name": "gta-v-map",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=22.22.3 <23"
+  },
+  "scripts": {
+    "install:all": "npm ci --prefix backend && npm ci --prefix frontend",
+    "dev:api": "npm run dev --prefix backend",
+    "dev:web": "npm run dev --prefix frontend",
+    "import": "npm run import-data --prefix backend --",
+    "demo": "python -m scraper.demo --output data/demo && npm run import -- data/demo/dataset.json",
+    "types": "npm run types --prefix backend && npm run types --prefix frontend",
+    "lint": "npm run lint --prefix backend && npm run lint --prefix frontend",
+    "test": "npm test --prefix backend && python -m unittest discover -s scraper/tests",
+    "test:e2e": "npm run test:e2e --prefix frontend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend"
+  }
+}

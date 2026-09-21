@@ -1,0 +1,4 @@
+jsonschema==4.26.0
+Pillow==12.1.1
+selenium==4.41.0
+urllib3==2.6.3
