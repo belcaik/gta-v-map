@@ -1,5 +1,30 @@
 # Handoff
 
+## Cierre de publicación GHCR — 2026-09-21
+
+T10 cerrado tras autorización explícita de PR a main y publicación GHCR.
+[PR #2](https://github.com/belcaik/gta-v-map/pull/2) integrado en
+`385e396c64139555b2cfcec43e56bd291382b7e0`; CI y build del PR pasaron.
+[CI de main](https://github.com/belcaik/gta-v-map/actions/runs/35664868938) y
+[publicación Docker](https://github.com/belcaik/gta-v-map/actions/runs/35664868975)
+terminaron correctamente en runners estándar del repositorio público.
+
+- Paquete público: [gta-v-map](https://github.com/belcaik/gta-v-map/pkgs/container/gta-v-map).
+- Publicadas `latest` y `sha-385e396c64139555b2cfcec43e56bd291382b7e0`.
+- Digest desplegado: `sha256:733f032b62922fa085fd3d0ac991b543fe338842f83538e93c2177be58d62ca4`.
+- Acceso anónimo al manifiesto verificado sin credenciales. El script hizo pull en
+  baphomet desde GHCR, sin archivo local ni reimportación de datos.
+- `.env.docker` local y remoto fijan `MAP_IMAGE` a la referencia GHCR por digest.
+  Futuras actualizaciones: elegir otro digest/etiqueta publicada y ejecutar
+  `CONTAINER_ENGINE=podman ./scripts/deploy.sh`.
+- Contenedor saludable y unidad de usuario activa; 2293 puntos y progreso idéntico
+  antes/después de desplegar. Los datos y recursos personales siguen fuera de Git/GHCR.
+- `real-check.mjs` contra la imagen GHCR en la LAN: escritorio/móvil, galería,
+  filtros y progreso pasan; cero errores JS y solicitudes externas. Marca restaurada.
+
+La siguiente sección registra el bootstrap previo por archivo; su referencia local
+fue sustituida por GHCR. ARM64 y un reinicio físico del host no se probaron.
+
 ## Podman en baphomet — 2026-09-21
 
 Despliegue real operativo en `baphomet`, puerto HTTP 8080; ubicación
@@ -32,8 +57,8 @@ No se instaló Docker ni se modificaron los servicios existentes.
   binario del servidor bajo `/tmp/gta-deploy-bin`. Instalar rsync localmente antes de
   futuras transferencias `--dataset`; el script detecta su ausencia antes de modificar el host.
 
-Pendiente opcional: publicar la rama/workflow y paquete GHCR para actualizaciones
-sin archivo local; comprobación desde dispositivos físicos adicionales de la LAN.
+El pendiente de publicación de esta etapa quedó resuelto en el cierre GHCR de
+arriba. La comprobación desde dispositivos físicos adicionales sigue siendo opcional.
 
 Transferencia a RDR2: [prompt autocontenido](prompts/rdr2-homeserver.prompt.md),
 con pasos, decisiones y criterios de cierre. Su creación no modificó RDR2 ni el servidor.
