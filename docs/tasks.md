@@ -47,7 +47,15 @@ recreación del contenedor y reinicio systemd conserva progreso. La imagen se ca
 por SSH; publicar el workflow y GHCR sigue pendiente. No se reinició el homeserver.
 Guía: [despliegue](deployment.md). Evidencia: [handoff](context-handoff.md).
 
-## Límites de cobertura
+## T11 Prompt de réplica para RDR2
+
+Estado: entregado en [prompt](prompts/rdr2-homeserver.prompt.md). Incluye arquitectura,
+parámetros, workflows, script SSH, compatibilidad Podman, problemas encontrados,
+systemd, despliegue por archivo/GHCR y criterios de verificación. Contrasta lo
+ejecutado con lo pendiente de publicación; documento revisado contra los archivos
+y evidencia de T10, sin direcciones LAN ni datos privados.
+
+## Límites de cobertura del mapa
 - Símbolos ausentes en la fuente: fallback explícito; ampliar solo con un recurso visual comprobado.
 - Imagen HTTP i.imgur.com del punto 14019: no descargada. Requiere inspeccionar y autorizar
   técnicamente ese destino HTTPS o una exportación legítima; no sustituir URL por intuición.

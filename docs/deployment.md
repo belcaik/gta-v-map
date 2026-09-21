@@ -267,6 +267,9 @@ cuando en realidad estarías abriendo otra DB.
 
 ## Réplica en RDR2
 
+Para encargar la implementación a otro agente, usa el
+[prompt autocontenido para rdr2-map](prompts/rdr2-homeserver.prompt.md).
+
 1. Inspecciona en RDR2 los scripts de build, salida compilada, arranque y contrato de
    importación. Ajusta las rutas `COPY`, `WORKDIR` y `CMD` del Dockerfile a ese proyecto.
    **Cierre:** una construcción limpia desde sus lockfiles termina correctamente.

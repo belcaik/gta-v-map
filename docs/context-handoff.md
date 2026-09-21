@@ -35,6 +35,9 @@ No se instaló Docker ni se modificaron los servicios existentes.
 Pendiente opcional: publicar la rama/workflow y paquete GHCR para actualizaciones
 sin archivo local; comprobación desde dispositivos físicos adicionales de la LAN.
 
+Transferencia a RDR2: [prompt autocontenido](prompts/rdr2-homeserver.prompt.md),
+con pasos, decisiones y criterios de cierre. Su creación no modificó RDR2 ni el servidor.
+
 ## Docker y homeserver — 2026-09-21
 
 Rama actual: `feat/docker-homeserver`, creada desde `origin/main` (`c1a1768`, PR #1
