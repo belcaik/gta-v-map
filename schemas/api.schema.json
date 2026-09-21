@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ApiContracts",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {},
+  "definitions": {
+    "Progress": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mapId": {
+          "type": "string"
+        },
+        "waypointId": {
+          "type": "string"
+        },
+        "found": {
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mapId",
+        "waypointId",
+        "found",
+        "updatedAt"
+      ]
+    },
+    "ProgressList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Progress"
+      }
+    },
+    "ProgressUpdate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "found": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "found"
+      ]
+    },
+    "ResolvedCategory": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "dataset.schema.json#/definitions/Category"
+        },
+        "icon": {
+          "anyOf": [
+            {
+              "$ref": "dataset.schema.json#/definitions/Asset"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "iconUrl": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^/assets/[A-Za-z0-9_-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "icon",
+        "iconUrl"
+      ]
+    },
+    "CategoryList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ResolvedCategory"
+      }
+    }
+  }
+}
