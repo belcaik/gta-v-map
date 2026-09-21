@@ -54,16 +54,19 @@ Estado observado en GTA el 2026-09-21:
   galería, progreso, recreación del contenedor y reinicio del servicio systemd.
 - No se reinició el servidor ni se comprobó desde teléfonos físicos: las vistas
   móviles se validaron con navegador automatizado.
-- Los workflows quedaron implementados y validados localmente, pero **no se
-  publicaron ni ejecutaron en GitHub** durante esta etapa. La imagen real se llevó
-  con `docker save` y se cargó con Podman. No afirmes una publicación GHCR previa.
+- En el bootstrap la imagen se llevó con `docker save` y se cargó con Podman.
+  Posteriormente se integró el PR #2 en main, CI y publicación pasaron en GitHub,
+  el paquete GHCR quedó público y el servidor hizo pull anónimo del digest publicado.
+  Ambos caminos quedaron verificados; el homeserver usa ahora la imagen GHCR.
+  Evidencia: https://github.com/belcaik/gta-v-map/pull/2 y
+  https://github.com/belcaik/gta-v-map/actions/runs/35664868975.
 
 Si tienes acceso al checkout vecino `../gta-v-map`, consulta como referencia de
-implementación su rama local `feat/docker-homeserver`, con cambios hasta `2c37da5`:
+implementación su rama `main` tras el PR #2 (implementación original hasta `2c37da5`):
 Dockerfile, .dockerignore, compose.yaml, compose.podman.yaml, .env.docker.example,
 scripts/deploy.sh, scripts/tests/test_deploy.py, .github/workflows/{ci,docker}.yml,
-docs/deployment.md y docs/context-handoff.md. Los cambios pueden seguir siendo
-locales: una consulta al main de GitHub no necesariamente los encontrará.
+docs/deployment.md y docs/context-handoff.md. La implementación ya está
+publicada en main; consulta el handoff para el digest desplegado y sus pruebas.
 
 Adapta rutas y comandos al código real de RDR2. Conserva sus IDs, coordenadas,
 contratos y esquema de DB; nunca copies datos, SQL específico ni progreso de GTA.

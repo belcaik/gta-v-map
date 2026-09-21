@@ -39,12 +39,15 @@ Criterio de cierre: checks de aplicación pasan, imagen sirve UI/API/medios,
 progreso sobrevive recreación y reimportación, script detecta errores y documenta
 parámetros, publicación, datos, respaldo, rollback y réplica. La ejecución remota
 se acredita por separado; requiere conexión SSH verificada e imagen publicada.
-Estado: implementado y desplegado en baphomet con Podman rootless, por elección del
+Estado: cerrado; PR #2 integrado en main, CI y publicación GHCR correctas.
+Paquete público y pull anónimo verificados. Desplegado en baphomet por digest con
+Podman rootless, por elección del
 usuario. 2293 puntos, medios locales, healthcheck sano y servicio de usuario habilitado.
 Lint/tipos/build, dos tests Node, seis Python, cuatro E2E, cinco tests de despliegue,
 Docker/Compose y checks estáticos pasan. Verificación real LAN con escritorio/móvil,
-recreación del contenedor y reinicio systemd conserva progreso. La imagen se cargó
-por SSH; publicar el workflow y GHCR sigue pendiente. No se reinició el homeserver.
+recreación del contenedor y reinicio systemd conserva progreso. La imagen inicial se cargó
+por SSH y fue reemplazada mediante pull de GHCR, conservando íntegro el progreso.
+No se reinició el homeserver.
 Guía: [despliegue](deployment.md). Evidencia: [handoff](context-handoff.md).
 
 ## T11 Prompt de réplica para RDR2
@@ -52,7 +55,7 @@ Guía: [despliegue](deployment.md). Evidencia: [handoff](context-handoff.md).
 Estado: entregado en [prompt](prompts/rdr2-homeserver.prompt.md). Incluye arquitectura,
 parámetros, workflows, script SSH, compatibilidad Podman, problemas encontrados,
 systemd, despliegue por archivo/GHCR y criterios de verificación. Contrasta lo
-ejecutado con lo pendiente de publicación; documento revisado contra los archivos
+ejecutado en bootstrap con el cierre de publicación; documento revisado contra los archivos
 y evidencia de T10, sin direcciones LAN ni datos privados.
 
 ## Límites de cobertura del mapa

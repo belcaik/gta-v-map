@@ -46,6 +46,13 @@ Mantén direcciones privadas solo en archivos locales.
 
 ## 2. Construir y publicar en GitHub
 
+La publicación de este proyecto está verificada: [PR #2](https://github.com/belcaik/gta-v-map/pull/2),
+[workflow](https://github.com/belcaik/gta-v-map/actions/runs/35664868975) y
+[paquete público GHCR](https://github.com/belcaik/gta-v-map/pkgs/container/gta-v-map).
+El homeserver ya usa un digest de GHCR; la referencia exacta y las pruebas están
+registradas en [handoff](context-handoff.md). Los pasos siguientes sirven para
+actualizaciones y para replicar el proceso.
+
 Para construir localmente sin subir nada:
 
 ```bash
